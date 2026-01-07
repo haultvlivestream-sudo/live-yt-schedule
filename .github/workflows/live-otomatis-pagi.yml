@@ -1,10 +1,10 @@
-name: "3. Live Schedule (7 AM WIB)"
+name: "3. Live Schedule (TES JAM 15:21 WIB)"
 
 on:
   schedule:
-    # Menit 0, Jam 00 UTC (Sama dengan Jam 07:00 WIB)
-    - cron: '0 0 * * *'
-  workflow_dispatch: # Supaya tombol "Run Workflow" manual tetep ada
+    # 15:21 WIB = 08:21 UTC
+    - cron: '21 8 * * *'
+  workflow_dispatch: # Supaya bisa dijalankan manual juga
 
 jobs:
   streaming:
@@ -23,11 +23,11 @@ jobs:
           # Ambil Cookies dari Secrets
           echo "${{ secrets.YT_COOKIES }}" > cookies.txt
           
-          # Unduh logo (Ganti link video ini kalau mau ganti logo)
+          # Unduh logo
           LINK_LOGO="https://youtu.be/zR6n39ZWrJM"
           yt-dlp --cookies cookies.txt -f "best" --merge-output-format mp4 "$LINK_LOGO" -o logo_video.mp4
 
-          echo "Sistem Standby... Menunggu Sumber Aktif..."
+          echo "Sistem Standby... Menunggu jadwal otomatis 15:21 WIB..."
           
           while true; do
             # Ambil URL Video dari Secrets
@@ -39,7 +39,7 @@ jobs:
               continue
             fi
 
-            echo "Sumber ditemukan! Memulai FFmpeg..."
+            echo "🚀 Sumber ditemukan! Memulai FFmpeg..."
 
             ffmpeg -re -i "$VIDEO_URL" \
               -stream_loop -1 -i logo_video.mp4 \
@@ -51,4 +51,3 @@ jobs:
             echo "FFmpeg berhenti. Mencoba restart dalam 2 detik..."
             sleep 2
           done
-          
